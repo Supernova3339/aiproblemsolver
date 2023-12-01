@@ -1,40 +1,68 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+<a name="readme-top"></a>
 
-## Getting Started
+<!-- PROJECT LOGO -->
+<!--suppress HtmlDeprecatedAttribute -->
+<div align="center">
+<img src="public/icon-192.png" alt="AI Problem Solver Logo">
+  <h1 align="center">AI Problem Solver</h1>
 
-First, run the development server:
+  <p align="center">
+    A search engine powered by AI that solves your problems
+    <br />
+    <br />
+    <a href="https://aiproblemsolver.vercel.app">View Website</a>
+  </p>
+</div>
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+<!-- Preview -->
+## 📸 Screenshot
+![img.png](img.png)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 🚀 Try it now!
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+[AI Problem Solver](https://aiproblemsolver.vercel.app)
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+### 🛠️ Built With
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
+![Next JS](https://img.shields.io/badge/Next-black?style=for-the-badge&logo=next.js&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+<br />
 
-## Learn More
+<!-- Features -->
+## ✨ Features
 
-To learn more about Next.js, take a look at the following resources:
+- **AI-powered Search:** Utilize the power of AI to find solutions to your problems.
+- **Intuitive Design:** Simple and familiar design for an effortless user experience.
+- **Responsive:** Works on various devices to provide a consistent experience.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+<br />
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+<!-- Getting Started -->
+## 🚀 Getting Started
 
-## Deploy on Vercel
+1. Clone the repository
+   ```sh
+   git clone https://github.com/supernova3339/ai-problem-solver.git
+   ```
+2. Install dependencies
+   ```sh
+   cd ai-problem-solver
+   npm install
+   ```
+3. Start the development server
+   ```sh
+   npm run dev
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+<br />
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+<!-- Usage -->
+## 🧑‍💻 Usage
+
+1. Visit [AI Problem Solver](https://aiproblemsolver.vercel.app/).
+2. Enter your problem in the search bar.
+3. Press Enter to get AI-generated solutions.
+
+<a href="#readme-top">Back to Top</a>
