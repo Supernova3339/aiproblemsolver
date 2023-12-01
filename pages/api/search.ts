@@ -13,6 +13,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(400).json({ error: 'Missing searchQuery parameter' });
     }
 
+    if (searchQuery.length > 200) {
+        return res.status(400).json({ error: 'Search exceeds 200 characters' });
+    }
+
     try {
         const prompt = `Answer the following question: ${searchQuery}`;
         const openaiInstance = new openai.OpenAI({
@@ -25,10 +29,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         });
 
         const answer = completion.choices[0]?.message?.content || 'No response from OpenAI';
-
-        if (answer.length > 200) {
-            return res.status(400).json({ error: 'Response exceeds 200 characters' });
-        }
 
         return res.status(200).json({ answer });
     } catch (error: any) {
