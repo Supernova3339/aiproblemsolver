@@ -14,7 +14,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     try {
-        const prompt = `Your response must be formatted as markdown. Answer the following question: ${searchQuery}`;
+        const prompt = `Answer the following question: ${searchQuery}`;
         const openaiInstance = new openai.OpenAI({
             apiKey: process.env.OPENAI_API_KEY,
         });
