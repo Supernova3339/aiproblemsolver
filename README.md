@@ -51,11 +51,7 @@
    cd ai-problem-solver
    npm install
    ```
-3. Configure the application
-   ```sh
-   echo "OPENAI_API_KEY" > .env.local
-   ```
-4. Start the development server
+3Start the development server
    ```sh
    npm run dev
    ```
