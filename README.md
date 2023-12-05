@@ -51,7 +51,7 @@
    cd ai-problem-solver
    npm install
    ```
-3Start the development server
+3. Start the development server
    ```sh
    npm run dev
    ```
