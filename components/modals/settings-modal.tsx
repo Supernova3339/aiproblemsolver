@@ -1,15 +1,26 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { Dialog, DialogContent, DialogHeader } from '@/components/ui/dialog';
-import { useSettings } from '@/hooks/use-settings';
+import { useModal } from '@/hooks/use-modal-store';
 import { Label } from '@/components/ui/label';
 import { ModeToggle } from '@/components/mode-toggle';
 import {GithubStar} from "@/components/github-star";
+import {SetKey} from "@/components/set-key";
 
 const SettingsModal = () => {
-    const settings = useSettings();
+    const { isOpen, onClose, type} = useModal();
+    const isModalOpen = isOpen && type === "settings";
+    const [isMounted, setIsMounted] = useState(false);
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
+
+
+    if (!isMounted) {
+        return null;
+    }
 
     return (
-        <Dialog open={settings.isOpen} onOpenChange={settings.onClose}>
+        <Dialog open={isModalOpen} onOpenChange={onClose}>
             <DialogContent>
                 <DialogHeader className="border-b pb-3">
                     <h2 className="text-lg font-medium">
@@ -25,7 +36,17 @@ const SettingsModal = () => {
                     </div>
                     <ModeToggle />
                 </div>
-                {/* hi */}
+                {/* divider */}
+                <div className="flex items-center justify-between">
+                    <div className="flex flex-col gap-y-1">
+                        <Label>API Key</Label>
+                        <span className="text-[0.8rem] text-muted-foreground">
+                            Manage your OpenAI API Key Here
+                        </span>
+                    </div>
+                    <SetKey />
+                </div>
+                {/* divider */}
                 <div className="flex items-center justify-between">
                     <div className="flex flex-col gap-y-1">
                         <Label>Open Source</Label>

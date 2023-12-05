@@ -2,6 +2,7 @@ import {Component} from "react";
 import {ThemeProvider} from "next-themes";
 import { ModalProvider } from "@/components/providers/modal-provider";
 import {Metadata} from "next";
+import {Toaster} from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
     title: 'AI Problem Solver',
@@ -24,6 +25,7 @@ class Layout extends Component<{
                     <nav />
                     <ModalProvider />
                     {children}
+                    <Toaster />
                 </ThemeProvider>
             </div>
         );

@@ -1,6 +1,6 @@
-// pages/api/search.ts
 import { NextApiRequest, NextApiResponse } from 'next';
 import openai from 'openai';
+import { parse } from 'cookie';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method !== 'POST') {
@@ -8,6 +8,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     const { searchQuery } = req.body;
+
+    // Retrieve API key from cookies
+    const cookies = parse(req.headers.cookie || '');
+    const apiKey = cookies.openaiApiKey || null;
+
+    // Trigger error if API key is null or undefined
+    if (!apiKey || apiKey === 'null' || apiKey === 'undefined') {
+        return res.status(400).json({ error: 'API key is missing or invalid' });
+    }
 
     if (!searchQuery) {
         return res.status(400).json({ error: 'Missing searchQuery parameter' });
@@ -20,7 +29,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
         const prompt = `Answer the following question: ${searchQuery}`;
         const openaiInstance = new openai.OpenAI({
-            apiKey: process.env.OPENAI_API_KEY,
+            apiKey,
         });
 
         const completion = await openaiInstance.chat.completions.create({

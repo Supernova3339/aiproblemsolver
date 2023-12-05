@@ -1,14 +1,27 @@
-// components/SearchBar.tsx
 import { useState } from 'react';
 import Message from './Message';
+import { useModal } from "@/hooks/use-modal-store";
+import { parse } from "cookie";
 
 const SearchBar: React.FC = () => {
     const [searchQuery, setSearchQuery] = useState<string>('');
-    const [, setIsLoading] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const [response, setResponse] = useState<string | null>(null);
+    const { onOpen } = useModal();
 
     const handleSearch = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+
+        // Retrieve API key from cookies
+        const cookies = parse(document.cookie);
+        const apiKey = cookies.openaiApiKey || null;
+
+        if (!apiKey) {
+            // Open the API modal if the API Key is not present.
+            onOpen("api");
+            return;
+        }
+
         setIsLoading(true);
 
         try {
@@ -17,7 +30,7 @@ const SearchBar: React.FC = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ searchQuery }),
+                body: JSON.stringify({ searchQuery, apiKey }), // Include apiKey in the request body
             });
 
             if (res.ok) {
@@ -66,9 +79,10 @@ const SearchBar: React.FC = () => {
                                         name="q"
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
-                                        className="dark:placeholder-text-gray-200 block w-full rounded-md border-0 bg-white py-1.5 pl-10 pr-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-200 dark:bg-gray-800 dark:text-gray-100 dark:ring-gray-900 dark:focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                        placeholder="Search for your problem"
+                                        className={`dark:placeholder-text-gray-200 block w-full rounded-md border-0 bg-white py-1.5 pl-10 pr-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-200 dark:bg-gray-800 dark:text-gray-100 dark:ring-gray-900 dark:focus:ring-indigo-600 sm:text-sm sm:leading-6 ${isLoading ? 'cursor-not-allowed' : ''}`}
+                                        placeholder={isLoading ? 'Searching...' : 'Search for your problem'}
                                         type="search"
+                                        disabled={isLoading}
                                     />
                                 </div>
                             </form>
