@@ -16,7 +16,7 @@
 
 <!-- Preview -->
 ## 📸 Screenshot
-![img.png](img.png)
+![image](https://github.com/Supernova3339/aiproblemsolver/assets/63515814/010e9ee6-ebc8-40e7-826a-d4ee8227d79a)
 
 ### 🚀 Try it now!
 
