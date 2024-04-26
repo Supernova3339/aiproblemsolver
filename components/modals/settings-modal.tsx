@@ -5,6 +5,7 @@ import { Label } from '@/components/ui/label';
 import { ModeToggle } from '@/components/mode-toggle';
 import {GithubStar} from "@/components/github-star";
 import {SetKey} from "@/components/set-key";
+import {SetAIModel} from "@/components/set-ai-model";
 
 const SettingsModal = () => {
     const { isOpen, onClose, type} = useModal();
@@ -45,6 +46,16 @@ const SettingsModal = () => {
                         </span>
                     </div>
                     <SetKey />
+                </div>
+                {/* divider */}
+                <div className="flex items-center justify-between">
+                    <div className="flex flex-col gap-y-1">
+                        <Label>AI Model</Label>
+                        <span className="text-[0.8rem] text-muted-foreground">
+                            Manage your OpenAI API Model Here
+                        </span>
+                    </div>
+                    <SetAIModel />
                 </div>
                 {/* divider */}
                 <div className="flex items-center justify-between">

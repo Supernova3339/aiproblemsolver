@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-export type ModalType = "settings" | "api";
+export type ModalType = "settings" | "api" | "aimodel";
 
 interface ModalData {
     apiUrl?: string;
