@@ -28,7 +28,7 @@ const Message: React.FC<MessageProps> = ({response, onClear}) => {
             toast({
                 title: "Error",
                 description: "Unable to copy text",
-                variant: "failed",
+                variant: "destructive",
             })
             console.error('Failed to copy text: ', err);
         }
