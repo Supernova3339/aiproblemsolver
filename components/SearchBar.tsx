@@ -1,6 +1,8 @@
 import React, {useState} from 'react';
 import Message from './Message';
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip";
+import {useModal} from "@/hooks/use-modal-store";
+import {parse} from "cookie";
 
 const SearchBar: React.FC = () => {
     const [searchDisabled, setSearchDisabled] = React.useState(false);
@@ -8,12 +10,23 @@ const SearchBar: React.FC = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [response, setResponse] = useState<string | null>(null);
     const [showSearch, setShowSearch] = useState<boolean>(true);
+    const { onOpen } = useModal();
 
     const handleSearch = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         setIsLoading(true);
 
         try {
+            // Retrieve API key from cookies
+            const cookies = parse(document.cookie);
+            const apiKey = cookies.openaiApiKey || null;
+
+            if (!apiKey) {
+                // Open the API modal if the API Key is not present.
+                setIsLoading(false);
+                onOpen("api");
+                return;
+            }
             setSearchDisabled(true)
             const res = await fetch('/api/search', {
                 method: 'POST',
