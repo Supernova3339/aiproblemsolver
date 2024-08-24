@@ -33,16 +33,16 @@ const ApiKeyModal = () => {
     }
 
     const handleSave = () => {
-         // Check API key is not null
+        // Check API key is not null
         if (!apiKey) {
             toast({
-                title: "Something went wrong",
-                description: "Please Enter API Key.",
+                title: "API Key Required",
+                description: "Please enter a valid API key to continue.",
                 variant: "destructive",
             });
             return;
         }
-        
+
         // Save API key to cookies
         document.cookie = serialize('openaiApiKey', apiKey, { path: '/' });
         toast({
