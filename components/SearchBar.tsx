@@ -1,180 +1,142 @@
-import React, {useState} from 'react';
-import Message from './Message';
-import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip";
-import {useModal} from "@/hooks/use-modal-store";
-import {parse} from "cookie";
+import { NextApiRequest, NextApiResponse } from 'next';
+import OpenAI from 'openai';
+import { parse } from 'cookie';
+import formidable from 'formidable';
 
-const SearchBar: React.FC = () => {
-    const [searchDisabled, setSearchDisabled] = React.useState(false);
-    const [searchQuery, setSearchQuery] = useState<string>('');
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [response, setResponse] = useState<string | null>(null);
-    const [showSearch, setShowSearch] = useState<boolean>(true);
-    const { onOpen } = useModal();
-
-    const handleSearch = async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        setIsLoading(true);
-
-        try {
-            // Retrieve API key from cookies
-            const cookies = parse(document.cookie);
-            const apiKey = cookies.openaiApiKey || null;
-
-            if (!apiKey) {
-                // Open the API modal if the API Key is not present.
-                setIsLoading(false);
-                onOpen("api");
-                return;
-            }
-            setSearchDisabled(true)
-            const res = await fetch('/api/search', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({searchQuery}),
-            });
-
-            if (res.ok) {
-                const data = await res.json();
-                setResponse(data.answer);
-                setShowSearch(false);
-            } else {
-                console.error('Error calling API:', res.status, res.statusText);
-                setResponse('Error processing your request');
-            }
-        } catch (error) {
-            console.error('Error calling API:', error);
-            setResponse('Error processing your request');
-        } finally {
-            setIsLoading(false);
-            setSearchDisabled(false);
-        }
-    };
-
-    const handleClear = () => {
-        setSearchQuery('');
-        setResponse(null);
-        setShowSearch(true);
-    };
-
-    return (
-        <div className="h-screen flex flex-col pb-6 bg-background">
-            {showSearch && (
-                <div className="h-full flex flex-col justify-center">
-                    <div className="max-w-4xl w-full text-center mx-auto px-4 sm:px-6 lg:px-8">
-                        <svg className="w-28 h-auto mx-auto mb-4" width="116" height="32" viewBox="0 0 116 32"
-                             fill="none" xmlns="http://www.w3.org/2000/svg">
-                            {/* SVG content */}
-                        </svg>
-
-                        <h1 className="text-3xl font-bold text-gray-800 sm:text-4xl dark:text-white">
-                            AI <span
-                            className="bg-gradient-to-r from-green-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">Problem Solver</span>
-                            {/*<span className="pl-2 items-center text-center"><Badge variant={"success"}>Plus</Badge></span>*/}
-                        </h1>
-                        <p className="mt-3 text-gray-600 dark:text-neutral-400">
-                            Your AI-powered solution finder for your problems
-                        </p>
-                    </div>
-
-                    {/* Search */}
-                    <div className="mt-10 max-w-2xl w-full mx-auto px-4 sm:px-6 lg:px-8">
-                        <form onSubmit={handleSearch}>
-                            <div className="relative">
-                                <input
-                                    disabled={searchDisabled}
-                                    type="text"
-                                    className="p-4 block w-full border-gray-200 rounded-full text-sm focus:border-blue-500 focus:ring-primary disabled:opacity-50 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-primary"
-                                    placeholder="Solve anything..."
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                />
-                                <div className="absolute top-1/2 end-2 -translate-y-1/2 flex items-center gap-2">
-                                    <TooltipProvider>
-                                        <Tooltip>
-                                            <TooltipTrigger asChild>
-                                                <button
-                                                    type="button"
-                                                    disabled={true}
-                                                    className="cursor-not-allowed pr-2 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-full border border-transparent text-gray-500 hover:text-gray-800 disabled:opacity-50 dark:text-neutral-400 dark:hover:text-white"
-                                                >
-                                                    <svg className="flex-shrink-0 size-4"
-                                                         xmlns="http://www.w3.org/2000/svg"
-                                                         width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                                         stroke="currentColor" strokeWidth="2" strokeLinecap="round"
-                                                         strokeLinejoin="round">
-                                                        <path
-                                                            d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/>
-                                                        <path d="M12 12v9"/>
-                                                        <path d="m16 16-4-4-4 4"/>
-                                                    </svg>
-                                                </button>
-                                            </TooltipTrigger>
-                                            <TooltipContent>
-                                                <p>Uploading files is not available yet</p>
-                                            </TooltipContent>
-                                        </Tooltip>
-                                    </TooltipProvider>
-                                    {/*<button*/}
-                                    {/*    type="button"*/}
-                                    {/*    className="pr-2 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-full border border-transparent text-gray-500 hover:text-gray-800 disabled:opacity-50 dark:text-neutral-400 dark:hover:text-white"*/}
-                                    {/*>*/}
-                                    {/*    <svg className="flex-shrink-0 size-4" xmlns="http://www.w3.org/2000/svg"*/}
-                                    {/*         width="24" height="24" viewBox="0 0 24 24" fill="none"*/}
-                                    {/*         stroke="currentColor" strokeWidth="2" strokeLinecap="round"*/}
-                                    {/*         strokeLinejoin="round">*/}
-                                    {/*        <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/>*/}
-                                    {/*        <path d="M12 12v9"/>*/}
-                                    {/*        <path d="m16 16-4-4-4 4"/>*/}
-                                    {/*    </svg>*/}
-                                    {/*</button>*/}
-                                    {/*<button*/}
-                                    {/*    type="button"*/}
-                                    {/*    className="inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-full border border-transparent text-gray-500 hover:text-gray-800 bg-gray-100 disabled:opacity-50 dark:text-neutral-400 dark:hover:text-white dark:bg-neutral-800"*/}
-                                    {/*>*/}
-                                    {/*    <svg className="flex-shrink-0 size-4" xmlns="http://www.w3.org/2000/svg"*/}
-                                    {/*         width="24" height="24" viewBox="0 0 24 24" fill="none"*/}
-                                    {/*         stroke="currentColor" strokeWidth="2" strokeLinecap="round"*/}
-                                    {/*         strokeLinejoin="round">*/}
-                                    {/*        <path stroke-linecap="round" stroke-linejoin="round"*/}
-                                    {/*              d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"></path>*/}
-                                    {/*    </svg>*/}
-                                    {/*</button>*/}
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    {/* End Search */}
-                </div>
-            )}
-
-            {/* Result display section */}
-            {response && !showSearch && (
-                <div className="h-screen flex flex-col pb-6">
-                    <div className="h-full flex flex-col justify-center"> {/* Add flex container */}
-                        <div className="mt-10 max-w-2xl w-full mx-auto px-4 sm:px-6 lg:px-8">
-                            <Message response={response} onClear={handleClear}/>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {/* Loading indicator */}
-            {isLoading && (
-                <div className="mt-10 max-w-2xl w-full mx-auto px-4 sm:px-6 lg:px-8">
-                    <p className="text-center">Please Wait</p>
-                </div>
-            )}
-
-            <footer className="mt-auto max-w-4xl text-center mx-auto px-4 sm:px-6 lg:px-8">
-                <p className="text-xs text-gray-600 dark:text-neutral-500">© {new Date().getFullYear()} . Made with <span className="text-destructive animate-heartbeat">love</span> by <a
-                        className="text-gray-800 decoration-2 hover:underline font-semibold dark:text-neutral-300"
-                        href="http://superdev.one/" target="_blank">Supernova3339</a>.</p>
-            </footer>
-        </div>
-    );
+export const config = {
+    api: {
+        bodyParser: false,
+    },
 };
 
-export default SearchBar;
+interface Message {
+    role: 'system' | 'user' | 'assistant';
+    content: string;
+}
+
+const parseForm = async (req: NextApiRequest) => {
+    const form = formidable({
+        maxFileSize: 10 * 1024 * 1024, // 10 MB
+        multiples: true,
+    });
+    return new Promise((resolve, reject) => {
+        form.parse(req, (err, fields, files) => {
+            if (err) {
+                reject(err);
+            }
+            resolve({ fields, files });
+        });
+    });
+};
+
+const systemPrompt = `You are an AI problem solver assistant. Your role is to:
+1. Carefully analyze the user's question and any provided context
+2. Break down complex problems into manageable steps
+3. Provide clear, actionable solutions
+4. Include relevant code examples when appropriate
+5. Consider edge cases and potential issues
+6. Explain your reasoning clearly
+
+If code files are provided:
+1. Analyze the code structure and purpose
+2. Identify potential improvements or issues
+3. Consider security implications
+4. Suggest optimizations and best practices
+
+Format your response in markdown with clear sections:
+- Analysis (if applicable)
+- Solution
+- Implementation Steps (if applicable)
+- Code Examples (if applicable)
+- Additional Considerations
+
+Always aim to be thorough yet concise, and focus on practical, implementable solutions.`;
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+    if (req.method !== 'POST') {
+        return res.status(405).json({ error: 'Method Not Allowed' });
+    }
+
+    try {
+        const cookies = parse(req.headers.cookie || '');
+        const apiKey = cookies.openaiApiKey || null;
+        const apiModel = cookies.openaiApiModel || 'gpt-4-turbo-preview';
+
+        if (!apiKey || apiKey === 'null' || apiKey === 'undefined') {
+            return res.status(400).json({ error: 'API key is missing or invalid' });
+        }
+
+        const { fields, files }: any = await parseForm(req);
+        const { message, history } = fields;
+
+        if (!message) {
+            return res.status(400).json({ error: 'Missing message' });
+        }
+
+        if (message.length > 4000) {
+            return res.status(400).json({ error: 'Message exceeds 4000 characters' });
+        }
+
+        const openaiInstance = new OpenAI({
+            apiKey,
+        });
+
+        let messages: Message[] = [
+            { role: 'system', content: systemPrompt },
+        ];
+
+        if (history) {
+            try {
+                const parsedHistory = JSON.parse(history);
+                messages = messages.concat(parsedHistory.map((msg: any) => ({
+                    role: msg.role,
+                    content: msg.content,
+                })));
+            } catch (error) {
+                console.error('Error parsing conversation history:', error);
+            }
+        }
+
+        messages.push({ role: 'user', content: message[0] });
+
+        if (files.files) {
+            let fileContents = '';
+            const fileList = Array.isArray(files.files) ? files.files : [files.files];
+
+            for (const file of fileList) {
+                fileContents += `\nFile: ${file.originalFilename}\n\`\`\`\n${file.filepath}\n\`\`\`\n`;
+            }
+
+            if (fileContents) {
+                messages.push({
+                    role: 'user',
+                    content: `Here are the file contents:${fileContents}`,
+                });
+            }
+        }
+
+        const completion = await openaiInstance.chat.completions.create({
+            messages,
+            model: apiModel,
+            temperature: 0.7,
+            stream: true,
+            max_tokens: 4000,
+        });
+
+        let answer = '';
+        for await (const chunk of completion) {
+            if (chunk.choices[0]?.delta?.content) {
+                answer += chunk.choices[0].delta.content;
+                res.write(chunk.choices[0].delta.content);
+            }
+        }
+
+        res.end(); // End the stream after processing
+    } catch (error: any) {
+        console.error('Error processing request:', error);
+        return res.status(500).json({
+            error: 'Error processing request',
+            details: error.message,
+        });
+    }
+}
